@@ -1,0 +1,31 @@
+schema_version = "1.0.0"
+
+id = "pcb_pointcloud_export"
+version = "0.3.0"
+name = "Point Cloud Export (PCB)"
+tagline = "Export point clouds to PLY or a self-contained HTML viewer"
+maintainer = "Point Cloud Base"
+type = "add-on"
+
+website = "https://pointcloudbase.com/tools"
+
+tags = ["Import-Export", "Mesh"]
+
+blender_version_min = "4.2.0"
+
+# GPL — required for Blender extensions that use the bpy API.
+license = ["SPDX:GPL-3.0-or-later"]
+
+# Pure Python (numpy ships with Blender), so no wheels and no platform lock:
+# runs on every OS and on Blender 4.2 through 5.x.
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  ".git/",
+  ".gitignore",
+  "README.md",
+  "SPEC.md",
+  "/dist/",
+  "/*.zip",
+]
