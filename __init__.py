@@ -123,16 +123,6 @@ def _collect_points(objects, apply_transform):
     return np.concatenate(xyz_parts), np.concatenate(rgb_parts)
 
 
-def _decimate(xyz, rgb, max_points):
-    """Randomly subsample to max_points (0 = keep all)."""
-    n = len(xyz)
-    if max_points and n > max_points:
-        idx = np.random.default_rng(0).choice(n, max_points, replace=False)
-        idx.sort()
-        return xyz[idx], rgb[idx]
-    return xyz, rgb
-
-
 # --------------------------------------------------------------------------- #
 # PLY writer (binary little-endian, XYZ float32 + RGB uint8)
 # --------------------------------------------------------------------------- #
@@ -448,12 +438,6 @@ class PCB_OT_export_point_cloud_html(Operator, ExportHelper):
         description="Bake each object's world transform into the exported coordinates",
         default=True,
     )
-    max_points: IntProperty(
-        name="Max Points",
-        description="Randomly thin down to this many points (0 = keep all). "
-                    "~3,000,000 is a comfortable size for a shareable HTML",
-        default=3_000_000, min=0,
-    )
     point_size: FloatProperty(
         name="Point Size",
         description="Initial point size in the viewer (adjustable with the slider)",
@@ -471,9 +455,8 @@ class PCB_OT_export_point_cloud_html(Operator, ExportHelper):
             self.report({'ERROR'}, "Selected objects contain no points.")
             return {'CANCELLED'}
 
-        total = len(xyz)
-        xyz, rgb = _decimate(xyz, rgb, self.max_points)
-
+        # No extra thinning: export the displayed cloud as-is (density is decided
+        # at import time).
         title = os.path.splitext(os.path.basename(self.filepath))[0] or "Point Cloud"
         try:
             _write_html(self.filepath, xyz, rgb, self.point_size, title)
@@ -481,11 +464,7 @@ class PCB_OT_export_point_cloud_html(Operator, ExportHelper):
             self.report({'ERROR'}, f"HTML export failed: {exc}")
             return {'CANCELLED'}
 
-        if len(xyz) < total:
-            self.report({'INFO'},
-                        f"Exported {len(xyz):,} / {total:,} points (thinned) → {self.filepath}")
-        else:
-            self.report({'INFO'}, f"Exported {len(xyz):,} points → {self.filepath}")
+        self.report({'INFO'}, f"Exported {len(xyz):,} points → {self.filepath}")
         return {'FINISHED'}
 
 

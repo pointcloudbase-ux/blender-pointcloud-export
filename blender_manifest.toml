@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "pcb_pointcloud_export"
-version = "0.3.0"
+version = "0.3.1"
 name = "Point Cloud Export (PCB)"
 tagline = "Export point clouds to PLY or a self-contained HTML viewer"
 maintainer = "Point Cloud Base"

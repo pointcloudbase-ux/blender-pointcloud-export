@@ -44,9 +44,11 @@ Select the point cloud object(s), then:
 
 ### HTML viewer options
 - **Selection Only**, **Apply Object Transform** — as above.
-- **Max Points** — randomly thin down to this many points (0 = keep all).
-  ~3,000,000 is a comfortable size for a shareable file.
 - **Point Size** — initial point size in the viewer (adjustable with a slider).
+
+The HTML export does **not** thin the cloud further — it writes the displayed
+point cloud as-is (density is decided at import time). Keep clouds to a few
+million points for a comfortably shareable file.
 
 The viewer supports orbit / pan / zoom, a point-size slider, a light/dark
 background toggle and a reset-view button, and auto-fits the cloud on open.
@@ -63,8 +65,8 @@ Produces `pcb_pointcloud_export-<version>.zip` (git-ignored).
 
 ## Roadmap / known limits
 
-- PLY has no subsampling yet — large clouds export at full size (the HTML viewer
-  has a Max Points option).
+- No subsampling at export — both modes write the displayed cloud at full size.
+  Control density at import time instead.
 - Color fallback is a flat gray; height-gradient / intensity fallback planned.
 - LAS/LAZ export is a later target (needs the importer's coordinate offset to
   round-trip georeferencing).
